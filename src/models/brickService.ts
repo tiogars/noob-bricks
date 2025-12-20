@@ -5,7 +5,7 @@ export const brickService = {
    * Generate a unique ID for a brick
    */
   generateId(): string {
-    return `brick-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+    return `brick-${Date.now()}-${Math.random().toString(36).substring(2, 11)}`;
   },
 
   /**

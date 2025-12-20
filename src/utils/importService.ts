@@ -135,10 +135,14 @@ export const importService = {
    */
   validateBricks(bricks: unknown[]): Brick[] {
     return bricks.map((brick: unknown, index: number) => {
-      // Type guard for brick object
+      // Runtime type validation
+      if (typeof brick !== 'object' || brick === null) {
+        throw new Error(`Brick at index ${index} is not an object`);
+      }
+      
       const brickObj = brick as Record<string, unknown>;
       
-      if (!brickObj.number) {
+      if (!brickObj.number || typeof brickObj.number !== 'string' && typeof brickObj.number !== 'number') {
         throw new Error(`Brick at index ${index} is missing required field: number`);
       }
       if (!Array.isArray(brickObj.tags)) {
@@ -149,7 +153,7 @@ export const importService = {
         id: typeof brickObj.id === 'string' ? brickObj.id : brickService.generateId(),
         number: String(brickObj.number),
         title: brickObj.title ? String(brickObj.title) : undefined,
-        tags: (brickObj.tags as unknown[]).map((t: unknown) => String(t)),
+        tags: brickObj.tags.map((t: unknown) => String(t)),
         createdAt: typeof brickObj.createdAt === 'string' ? brickObj.createdAt : new Date().toISOString(),
         updatedAt: typeof brickObj.updatedAt === 'string' ? brickObj.updatedAt : new Date().toISOString(),
       };
