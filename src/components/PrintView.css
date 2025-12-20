@@ -1,0 +1,164 @@
+.print-view {
+  min-height: 100vh;
+  background: white;
+  padding: 2rem;
+}
+
+.print-controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  padding-bottom: 1rem;
+  border-bottom: 2px solid #e0e0e0;
+}
+
+.print-content {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.print-header {
+  text-align: center;
+  margin-bottom: 2rem;
+  padding-bottom: 1rem;
+  border-bottom: 3px solid #333;
+}
+
+.print-header h1 {
+  font-size: 2.5rem;
+  color: #333;
+  margin-bottom: 0.5rem;
+}
+
+.print-header h2 {
+  font-size: 1.75rem;
+  color: #666;
+  margin-bottom: 1rem;
+  font-weight: 400;
+}
+
+.print-filter-info {
+  color: #667eea;
+  font-size: 1.1rem;
+  margin-bottom: 0.5rem;
+}
+
+.print-date {
+  color: #888;
+  font-size: 0.95rem;
+  margin: 0;
+}
+
+.print-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 2rem;
+}
+
+.print-table thead {
+  background: #f5f5f5;
+}
+
+.print-table th {
+  padding: 1rem;
+  text-align: left;
+  font-weight: 700;
+  color: #333;
+  border-bottom: 2px solid #333;
+}
+
+.print-table td {
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid #e0e0e0;
+  color: #555;
+}
+
+.print-table tbody tr:hover {
+  background: #f9f9f9;
+}
+
+.brick-number-col {
+  font-weight: 700;
+  color: #667eea;
+  font-size: 1.1rem;
+}
+
+.print-empty {
+  text-align: center;
+  padding: 3rem;
+  color: #999;
+  font-size: 1.2rem;
+}
+
+.print-footer {
+  text-align: center;
+  padding-top: 1rem;
+  border-top: 2px solid #e0e0e0;
+  color: #666;
+  font-size: 0.95rem;
+}
+
+/* Print-specific styles */
+@media print {
+  .no-print {
+    display: none !important;
+  }
+
+  .print-view {
+    padding: 0;
+    background: white;
+  }
+
+  .print-content {
+    max-width: 100%;
+  }
+
+  .print-header {
+    border-bottom: 2px solid #000;
+  }
+
+  .print-header h1 {
+    font-size: 2rem;
+  }
+
+  .print-header h2 {
+    font-size: 1.5rem;
+  }
+
+  .print-table {
+    page-break-inside: auto;
+  }
+
+  .print-table tr {
+    page-break-inside: avoid;
+    page-break-after: auto;
+  }
+
+  .print-table thead {
+    display: table-header-group;
+  }
+
+  .print-table th {
+    border-bottom: 2px solid #000;
+  }
+
+  .print-table td {
+    border-bottom: 1px solid #ccc;
+  }
+}
+
+@media (max-width: 768px) {
+  .print-view {
+    padding: 1rem;
+  }
+
+  .print-table {
+    font-size: 0.875rem;
+  }
+
+  .print-table th,
+  .print-table td {
+    padding: 0.5rem;
+  }
+}
