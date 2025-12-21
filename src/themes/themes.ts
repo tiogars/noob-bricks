@@ -75,6 +75,8 @@ export const themes: { [key: string]: Theme } = {
   christmas: christmasTheme,
 };
 
+export const DEFAULT_THEME_NAME = 'christmas';
+
 export const getTheme = (themeName: string): Theme => {
-  return themes[themeName] || christmasTheme; // Christmas as default
+  return themes[themeName] || themes[DEFAULT_THEME_NAME];
 };

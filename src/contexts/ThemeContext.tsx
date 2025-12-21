@@ -1,7 +1,7 @@
 import { createContext, useContext, useEffect, useState } from 'react';
 import type { ReactNode } from 'react';
 import type { Theme } from '../types/theme';
-import { getTheme } from '../themes/themes';
+import { getTheme, DEFAULT_THEME_NAME } from '../themes/themes';
 
 interface ThemeContextType {
   theme: Theme;
@@ -13,7 +13,7 @@ const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 export const ThemeProvider = ({ children }: { children: ReactNode }) => {
   const [themeName, setThemeName] = useState<string>(() => {
     const saved = localStorage.getItem('theme');
-    return saved || 'christmas'; // Christmas as default
+    return saved || DEFAULT_THEME_NAME;
   });
 
   const theme = getTheme(themeName);
@@ -22,6 +22,7 @@ export const ThemeProvider = ({ children }: { children: ReactNode }) => {
     localStorage.setItem('theme', themeName);
     
     // Apply CSS variables to root
+    // Note: Assumes theme color keys are in simple camelCase format
     const root = document.documentElement;
     Object.entries(theme.colors).forEach(([key, value]) => {
       // Convert camelCase to kebab-case for CSS variables
