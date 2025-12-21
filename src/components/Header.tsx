@@ -1,3 +1,4 @@
+import { ThemeSelector } from './ThemeSelector';
 import './Header.css';
 
 export function Header() {
@@ -9,6 +10,9 @@ export function Header() {
           Brick Manager
         </h1>
         <p className="header-subtitle">Manage your favorite brick numbers with style!</p>
+        <div className="header-theme">
+          <ThemeSelector />
+        </div>
       </div>
     </header>
   );

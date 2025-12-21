@@ -47,7 +47,7 @@
 .btn-export {
   flex: 1;
   min-width: 120px;
-  background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+  background: linear-gradient(135deg, var(--export-button-start) 0%, var(--export-button-end) 100%);
   color: white;
   box-shadow: 0 4px 15px rgba(79, 172, 254, 0.3);
 }
@@ -77,7 +77,7 @@
 }
 
 .btn-import {
-  background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+  background: linear-gradient(135deg, var(--import-button-start) 0%, var(--import-button-end) 100%);
   color: white;
   box-shadow: 0 4px 15px rgba(67, 233, 123, 0.3);
   padding: 0.75rem 1.5rem;
