@@ -5,7 +5,7 @@
 
 version: 2
 updates:
-  # Maintain dependencies for npm
+  # Maintain dependencies for npm (includes pnpm projects)
   - package-ecosystem: "npm"
     directory: "/"
     schedule:
