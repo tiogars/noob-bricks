@@ -6,6 +6,7 @@ import { BrickList } from './components/BrickList';
 import { TagFilter } from './components/TagFilter';
 import { ImportExport } from './components/ImportExport';
 import { PrintView } from './components/PrintView';
+import { Footer } from './components/Footer';
 import type { Brick } from './types';
 import './App.css';
 
@@ -84,6 +85,8 @@ function App() {
           </div>
         </div>
       </main>
+      
+      <Footer />
     </div>
   );
 }
