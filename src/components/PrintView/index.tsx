@@ -1,12 +1,6 @@
-import type { Brick } from '../types';
-import { brickService } from '../models/brickService';
+import { brickService } from '../../models/brickService';
+import type { PrintViewProps } from './PrintView.types';
 import './PrintView.css';
-
-interface PrintViewProps {
-  bricks: Brick[];
-  selectedTags: string[];
-  onClose: () => void;
-}
 
 export function PrintView({ bricks, selectedTags, onClose }: PrintViewProps) {
   const sortedBricks = brickService.sortByNumber(bricks);

@@ -1,5 +1,5 @@
-import { useTheme } from '../contexts/ThemeContext';
-import { themes } from '../themes/themes';
+import { useTheme } from '../../contexts/ThemeContext';
+import { themes } from '../../themes/themes';
 import './ThemeSelector.css';
 
 export const ThemeSelector = () => {

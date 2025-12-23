@@ -1,13 +1,6 @@
 import { useState } from 'react';
-import type { Brick } from '../types';
+import type { BrickFormProps } from './BrickForm.types';
 import './BrickForm.css';
-
-interface BrickFormProps {
-  onSubmit: (formData: { number: string; title?: string; tags: string[] }) => void;
-  editingBrick: Brick | null;
-  onCancel: () => void;
-  existingTags: string[];
-}
 
 export function BrickForm({ onSubmit, editingBrick, onCancel, existingTags }: BrickFormProps) {
   const [number, setNumber] = useState(editingBrick?.number || '');

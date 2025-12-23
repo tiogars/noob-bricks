@@ -1,14 +1,9 @@
 import { useState } from 'react';
-import type { Brick, ExportFormat } from '../types';
-import { exportService } from '../utils/exportService';
-import { importService } from '../utils/importService';
+import type { Brick, ExportFormat } from '../../types';
+import { exportService } from '../../utils/exportService';
+import { importService } from '../../utils/importService';
+import type { ImportExportProps } from './ImportExport.types';
 import './ImportExport.css';
-
-interface ImportExportProps {
-  bricks: Brick[];
-  onImport: (bricks: Brick[]) => void;
-  onClearAll: () => void;
-}
 
 export function ImportExport({ bricks, onImport, onClearAll }: ImportExportProps) {
   const [isImporting, setIsImporting] = useState(false);

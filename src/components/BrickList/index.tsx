@@ -1,17 +1,11 @@
-import type { Brick } from '../types';
-import { brickService } from '../models/brickService';
+import type { BrickListProps } from './BrickList.types';
+import { brickService } from '../../models/brickService';
 import './BrickList.css';
-
-interface BrickListProps {
-  bricks: Brick[];
-  onEdit: (brick: Brick) => void;
-  onDelete: (id: string) => void;
-}
 
 export function BrickList({ bricks, onEdit, onDelete }: BrickListProps) {
   const sortedBricks = brickService.sortByNumber(bricks);
 
-  const handleDelete = (brick: Brick) => {
+  const handleDelete = (brick: BrickListProps['bricks'][0]) => {
     if (window.confirm(`Are you sure you want to delete brick ${brick.number}?`)) {
       onDelete(brick.id);
     }

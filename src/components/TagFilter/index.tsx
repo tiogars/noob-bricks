@@ -1,11 +1,5 @@
+import type { TagFilterProps } from './TagFilter.types';
 import './TagFilter.css';
-
-interface TagFilterProps {
-  tags: string[];
-  selectedTags: string[];
-  onTagsChange: (tags: string[]) => void;
-  onPrint: () => void;
-}
 
 export function TagFilter({ tags, selectedTags, onTagsChange, onPrint }: TagFilterProps) {
   const handleToggleTag = (tag: string) => {

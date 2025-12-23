@@ -1,4 +1,4 @@
-import { ThemeSelector } from './ThemeSelector';
+import { ThemeSelector } from '../ThemeSelector';
 import './Header.css';
 
 export function Header() {
