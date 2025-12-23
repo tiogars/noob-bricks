@@ -55,10 +55,38 @@
   font-family: inherit;
 }
 
+.form-input.error {
+  border-color: #f5576c;
+}
+
 .form-input:focus {
   outline: none;
   border-color: var(--accent-color);
   box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.form-input.error:focus {
+  border-color: #f5576c;
+  box-shadow: 0 0 0 3px rgba(245, 87, 108, 0.1);
+}
+
+.error-message {
+  color: #f5576c;
+  font-size: 0.875rem;
+  margin-top: 0.25rem;
+  font-weight: 500;
+  animation: errorAppear 0.2s ease-out;
+}
+
+@keyframes errorAppear {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .tag-input-group {

@@ -1,47 +1,71 @@
-import { useState } from 'react';
-import type { BrickFormProps } from './BrickForm.types';
+import { useState, useEffect } from 'react';
+import { useForm, Controller } from 'react-hook-form';
+import type { BrickFormProps, BrickFormInputs } from './BrickForm.types';
 import './BrickForm.css';
 
 export function BrickForm({ onSubmit, editingBrick, onCancel, existingTags }: BrickFormProps) {
-  const [number, setNumber] = useState(editingBrick?.number || '');
-  const [title, setTitle] = useState(editingBrick?.title || '');
   const [tagInput, setTagInput] = useState('');
-  const [selectedTags, setSelectedTags] = useState<string[]>(editingBrick?.tags || []);
+  
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+    reset,
+    watch,
+    setValue,
+  } = useForm<BrickFormInputs>({
+    defaultValues: {
+      number: editingBrick?.number || '',
+      title: editingBrick?.title || '',
+      tags: editingBrick?.tags || [],
+    },
+    mode: 'onBlur', // Validate on blur for better UX
+  });
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!number.trim()) {
-      alert('Brick number is required!');
-      return;
-    }
+  const selectedTags = watch('tags');
 
+  // Reset form when editingBrick changes
+  useEffect(() => {
+    reset({
+      number: editingBrick?.number || '',
+      title: editingBrick?.title || '',
+      tags: editingBrick?.tags || [],
+    });
+  }, [editingBrick, reset]);
+
+  const onFormSubmit = (data: BrickFormInputs) => {
     onSubmit({
-      number: number.trim(),
-      title: title.trim() || undefined,
-      tags: selectedTags,
+      number: data.number.trim(),
+      title: data.title?.trim() || undefined,
+      tags: data.tags,
     });
 
-    setNumber('');
-    setTitle('');
-    setSelectedTags([]);
-    setTagInput('');
+    // Reset form after submission if not editing
+    if (!editingBrick) {
+      reset({
+        number: '',
+        title: '',
+        tags: [],
+      });
+      setTagInput('');
+    }
   };
 
   const handleAddTag = () => {
     const tag = tagInput.trim();
     if (tag && !selectedTags.includes(tag)) {
-      setSelectedTags([...selectedTags, tag]);
+      setValue('tags', [...selectedTags, tag], { shouldValidate: true });
       setTagInput('');
     }
   };
 
   const handleRemoveTag = (tag: string) => {
-    setSelectedTags(selectedTags.filter((t) => t !== tag));
+    setValue('tags', selectedTags.filter((t) => t !== tag), { shouldValidate: true });
   };
 
   const handleQuickAddTag = (tag: string) => {
     if (!selectedTags.includes(tag)) {
-      setSelectedTags([...selectedTags, tag]);
+      setValue('tags', [...selectedTags, tag], { shouldValidate: true });
     }
   };
 
@@ -58,31 +82,51 @@ export function BrickForm({ onSubmit, editingBrick, onCancel, existingTags }: Br
         {editingBrick ? '✏️ Edit Brick' : '➕ Add New Brick'}
       </h2>
       
-      <form onSubmit={handleSubmit} className="brick-form">
+      <form onSubmit={handleSubmit(onFormSubmit)} className="brick-form">
         <div className="form-group">
           <label htmlFor="brick-number">
             Brick Number <span className="required">*</span>
           </label>
-          <input
-            type="text"
-            id="brick-number"
-            value={number}
-            onChange={(e) => setNumber(e.target.value)}
-            placeholder="e.g., 12345"
-            className="form-input"
-            required
+          <Controller
+            name="number"
+            control={control}
+            rules={{
+              required: 'Brick number is required',
+              validate: {
+                notEmpty: (value) => value.trim().length > 0 || 'Brick number cannot be empty',
+              },
+            }}
+            render={({ field }) => (
+              <>
+                <input
+                  {...field}
+                  type="text"
+                  id="brick-number"
+                  placeholder="e.g., 12345"
+                  className={`form-input ${errors.number ? 'error' : ''}`}
+                />
+                {errors.number && (
+                  <span className="error-message">{errors.number.message}</span>
+                )}
+              </>
+            )}
           />
         </div>
 
         <div className="form-group">
           <label htmlFor="brick-title">Title (Optional)</label>
-          <input
-            type="text"
-            id="brick-title"
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-            placeholder="e.g., My favorite brick"
-            className="form-input"
+          <Controller
+            name="title"
+            control={control}
+            render={({ field }) => (
+              <input
+                {...field}
+                type="text"
+                id="brick-title"
+                placeholder="e.g., My favorite brick"
+                className="form-input"
+              />
+            )}
           />
         </div>
 
