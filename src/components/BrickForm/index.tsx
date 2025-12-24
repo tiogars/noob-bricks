@@ -18,6 +18,7 @@ import type { BrickFormProps, BrickFormInputs } from './BrickForm.types';
 export function BrickForm({ onSubmit, editingBrick, onCancel, existingTags }: BrickFormProps) {
   const [tagInput, setTagInput] = useState('');
   const [imagePreview, setImagePreview] = useState<string | undefined>(editingBrick?.imageUrl);
+  const [imageError, setImageError] = useState<string>('');
   
   const {
     control,
@@ -100,10 +101,12 @@ export function BrickForm({ onSubmit, editingBrick, onCancel, existingTags }: Br
     if (file) {
       // Check file size (limit to 500KB for localStorage efficiency)
       if (file.size > 500 * 1024) {
-        alert('Image size should be less than 500KB for optimal storage. Please resize your image.');
+        setImageError('Image size should be less than 500KB for optimal storage. Please resize your image.');
+        e.target.value = ''; // Reset file input
         return;
       }
 
+      setImageError('');
       const reader = new FileReader();
       reader.onloadend = () => {
         const base64String = reader.result as string;
@@ -117,6 +120,7 @@ export function BrickForm({ onSubmit, editingBrick, onCancel, existingTags }: Br
   const handleRemoveImage = () => {
     setValue('imageUrl', '', { shouldValidate: true });
     setImagePreview(undefined);
+    setImageError('');
   };
 
   return (
@@ -205,9 +209,16 @@ export function BrickForm({ onSubmit, editingBrick, onCancel, existingTags }: Br
                 />
               </Box>
             )}
-            <Typography variant="caption" color="text.secondary" sx={{ mt: 1, display: 'block' }}>
-              Recommended: JPEG or PNG, max 500KB, 300x300px or smaller
-            </Typography>
+            {imageError && (
+              <Typography variant="caption" color="error" sx={{ mt: 1, display: 'block' }}>
+                {imageError}
+              </Typography>
+            )}
+            {!imageError && (
+              <Typography variant="caption" color="text.secondary" sx={{ mt: 1, display: 'block' }}>
+                Recommended: JPEG or PNG, max 500KB, 300x300px or smaller
+              </Typography>
+            )}
           </Box>
 
           <Box>
