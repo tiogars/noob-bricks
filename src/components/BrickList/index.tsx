@@ -10,13 +10,15 @@ import DialogTitle from '@mui/material/DialogTitle';
 import DialogContent from '@mui/material/DialogContent';
 import DialogActions from '@mui/material/DialogActions';
 import Button from '@mui/material/Button';
+import Tooltip from '@mui/material/Tooltip';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
+import OpenInNewIcon from '@mui/icons-material/OpenInNew';
 import { useState } from 'react';
 import type { BrickListProps } from './BrickList.types';
 import { brickService } from '../../models/brickService';
 
-export function BrickList({ bricks, onEdit, onDelete }: BrickListProps) {
+export function BrickList({ bricks, onEdit, onDelete, externalLinks = [] }: BrickListProps) {
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [brickToDelete, setBrickToDelete] = useState<BrickListProps['bricks'][0] | null>(null);
   const sortedBricks = brickService.sortByNumber(bricks);
@@ -122,6 +124,25 @@ export function BrickList({ bricks, onEdit, onDelete }: BrickListProps) {
                   {brick.tags.map((tag) => (
                     <Chip key={tag} label={tag} size="small" />
                   ))}
+                </Box>
+              )}
+
+              {externalLinks.filter(link => link.enabled).length > 0 && (
+                <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1, mb: 2 }}>
+                  {externalLinks
+                    .filter(link => link.enabled)
+                    .map((link) => (
+                      <Tooltip key={link.id} title={`Search on ${link.name}`}>
+                        <Button
+                          size="small"
+                          variant="outlined"
+                          startIcon={<OpenInNewIcon />}
+                          onClick={() => window.open(`${link.url}${brick.number}`, '_blank')}
+                        >
+                          {link.name}
+                        </Button>
+                      </Tooltip>
+                    ))}
                 </Box>
               )}
 

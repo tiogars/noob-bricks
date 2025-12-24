@@ -15,9 +15,9 @@ export function useBricks() {
 
   // Save data to localStorage whenever bricks change
   useEffect(() => {
-    if (bricks.length > 0 || tags.length > 0) {
-      storageService.save({ bricks, tags });
-    }
+    const data = storageService.load();
+    const externalLinks = data?.externalLinks;
+    storageService.save({ bricks, tags, externalLinks });
   }, [bricks, tags]);
 
   const addBrick = (formData: BrickFormData) => {
@@ -47,9 +47,11 @@ export function useBricks() {
   };
 
   const clearAllBricks = () => {
+    const data = storageService.load();
+    const externalLinks = data?.externalLinks;
     setBricks([]);
     setTags([]);
-    storageService.clear();
+    storageService.save({ bricks: [], tags: [], externalLinks });
   };
 
   const updateTags = (bricksList: Brick[]) => {

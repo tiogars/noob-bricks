@@ -6,22 +6,27 @@ import Fab from '@mui/material/Fab';
 import Tooltip from '@mui/material/Tooltip';
 import AddIcon from '@mui/icons-material/Add';
 import ImportExportIcon from '@mui/icons-material/ImportExport';
+import SettingsIcon from '@mui/icons-material/Settings';
 import { useBricks } from '../hooks/useBricks';
+import { useExternalLinks } from '../hooks/useExternalLinks';
 import { Header } from '../components/Header';
 import { BrickFormModal } from '../components/BrickFormModal';
 import { BrickList } from '../components/BrickList';
 import { TagFilter } from '../components/TagFilter';
 import { ImportExportModal } from '../components/ImportExportModal';
+import { ExternalLinksSettings } from '../components/ExternalLinksSettings';
 import { Footer } from '../components/Footer';
 import type { Brick } from '../types';
 
 export function Home() {
   const navigate = useNavigate();
   const { bricks, tags, addBrick, updateBrick, deleteBrick, importBricks, clearAllBricks } = useBricks();
+  const { externalLinks, addExternalLink, updateExternalLink, deleteExternalLink, toggleExternalLink } = useExternalLinks();
   const [editingBrick, setEditingBrick] = useState<Brick | null>(null);
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const [brickFormModalOpen, setBrickFormModalOpen] = useState(false);
   const [importExportModalOpen, setImportExportModalOpen] = useState(false);
+  const [externalLinksSettingsOpen, setExternalLinksSettingsOpen] = useState(false);
 
   const handleEdit = (brick: Brick) => {
     setEditingBrick(brick);
@@ -71,6 +76,7 @@ export function Home() {
             bricks={filteredBricks}
             onEdit={handleEdit}
             onDelete={deleteBrick}
+            externalLinks={externalLinks}
           />
         </Box>
       </Container>
@@ -116,6 +122,24 @@ export function Home() {
         </Fab>
       </Tooltip>
 
+      <Tooltip title="External Links Settings" placement="left">
+        <Fab
+          aria-label="external links settings"
+          onClick={() => setExternalLinksSettingsOpen(true)}
+          sx={{
+            position: 'fixed',
+            bottom: 168,
+            right: 24,
+            background: 'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)',
+            '&:hover': {
+              background: 'linear-gradient(135deg, #00f2fe 0%, #4facfe 100%)',
+            },
+          }}
+        >
+          <SettingsIcon />
+        </Fab>
+      </Tooltip>
+
       {/* Modals */}
       <BrickFormModal
         open={brickFormModalOpen}
@@ -132,6 +156,16 @@ export function Home() {
         bricks={bricks}
         onImport={importBricks}
         onClearAll={clearAllBricks}
+      />
+
+      <ExternalLinksSettings
+        open={externalLinksSettingsOpen}
+        onClose={() => setExternalLinksSettingsOpen(false)}
+        externalLinks={externalLinks}
+        onAdd={addExternalLink}
+        onUpdate={updateExternalLink}
+        onDelete={deleteExternalLink}
+        onToggle={toggleExternalLink}
       />
     </Box>
   );
