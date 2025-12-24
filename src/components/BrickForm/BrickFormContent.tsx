@@ -6,12 +6,17 @@ import Button from '@mui/material/Button';
 import Chip from '@mui/material/Chip';
 import Typography from '@mui/material/Typography';
 import Stack from '@mui/material/Stack';
+import CardMedia from '@mui/material/CardMedia';
+import IconButton from '@mui/material/IconButton';
 import AddIcon from '@mui/icons-material/Add';
 import SaveIcon from '@mui/icons-material/Save';
+import PhotoCamera from '@mui/icons-material/PhotoCamera';
+import DeleteIcon from '@mui/icons-material/Delete';
 import type { BrickFormProps, BrickFormInputs } from './BrickForm.types';
 
 export function BrickFormContent({ onSubmit, editingBrick, onCancel, existingTags }: BrickFormProps) {
   const [tagInput, setTagInput] = useState('');
+  const [imagePreview, setImagePreview] = useState<string | undefined>(editingBrick?.imageUrl);
   
   const {
     control,
@@ -25,6 +30,7 @@ export function BrickFormContent({ onSubmit, editingBrick, onCancel, existingTag
       number: editingBrick?.number || '',
       title: editingBrick?.title || '',
       tags: editingBrick?.tags || [],
+      imageUrl: editingBrick?.imageUrl || '',
     },
     mode: 'onBlur',
   });
@@ -37,7 +43,9 @@ export function BrickFormContent({ onSubmit, editingBrick, onCancel, existingTag
       number: editingBrick?.number || '',
       title: editingBrick?.title || '',
       tags: editingBrick?.tags || [],
+      imageUrl: editingBrick?.imageUrl || '',
     });
+    setImagePreview(editingBrick?.imageUrl);
   }, [editingBrick, reset]);
 
   const onFormSubmit = (data: BrickFormInputs) => {
@@ -45,6 +53,7 @@ export function BrickFormContent({ onSubmit, editingBrick, onCancel, existingTag
       number: data.number.trim(),
       title: data.title?.trim() || undefined,
       tags: data.tags,
+      imageUrl: data.imageUrl,
     });
 
     // Reset form after submission if not editing
@@ -53,8 +62,10 @@ export function BrickFormContent({ onSubmit, editingBrick, onCancel, existingTag
         number: '',
         title: '',
         tags: [],
+        imageUrl: '',
       });
       setTagInput('');
+      setImagePreview(undefined);
     }
   };
 
@@ -81,6 +92,30 @@ export function BrickFormContent({ onSubmit, editingBrick, onCancel, existingTag
       e.preventDefault();
       handleAddTag();
     }
+  };
+
+  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      // Check file size (limit to 500KB for localStorage efficiency)
+      if (file.size > 500 * 1024) {
+        alert('Image size should be less than 500KB for optimal storage. Please resize your image.');
+        return;
+      }
+
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        const base64String = reader.result as string;
+        setValue('imageUrl', base64String, { shouldValidate: true });
+        setImagePreview(base64String);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleRemoveImage = () => {
+    setValue('imageUrl', '', { shouldValidate: true });
+    setImagePreview(undefined);
   };
 
   return (
@@ -120,6 +155,54 @@ export function BrickFormContent({ onSubmit, editingBrick, onCancel, existingTag
             />
           )}
         />
+
+        <Box>
+          <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
+            Brick Image (Optional)
+          </Typography>
+          <Stack direction="row" spacing={2} alignItems="center">
+            <Button
+              variant="outlined"
+              component="label"
+              startIcon={<PhotoCamera />}
+            >
+              Upload Image
+              <input
+                type="file"
+                hidden
+                accept="image/*"
+                onChange={handleImageUpload}
+              />
+            </Button>
+            {imagePreview && (
+              <IconButton
+                size="small"
+                color="error"
+                onClick={handleRemoveImage}
+                aria-label="Remove image"
+              >
+                <DeleteIcon />
+              </IconButton>
+            )}
+          </Stack>
+          {imagePreview && (
+            <Box sx={{ mt: 2, maxWidth: 200 }}>
+              <CardMedia
+                component="img"
+                image={imagePreview}
+                alt="Brick preview"
+                sx={{
+                  borderRadius: 1,
+                  border: 1,
+                  borderColor: 'divider',
+                }}
+              />
+            </Box>
+          )}
+          <Typography variant="caption" color="text.secondary" sx={{ mt: 1, display: 'block' }}>
+            Recommended: JPEG or PNG, max 500KB, 300x300px or smaller
+          </Typography>
+        </Box>
 
         <Box>
           <Stack direction="row" spacing={1} sx={{ mb: 2 }}>

@@ -12,7 +12,7 @@ interface BrickFormModalProps extends BrickFormProps {
 }
 
 export function BrickFormModal({ open, onClose, onSubmit, editingBrick, onCancel, existingTags }: BrickFormModalProps) {
-  const handleSubmit = (data: { number: string; title?: string; tags: string[] }) => {
+  const handleSubmit = (data: { number: string; title?: string; tags: string[]; imageUrl?: string }) => {
     onSubmit(data);
     // Always close modal after successful submission
     onClose();
