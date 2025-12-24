@@ -2,6 +2,8 @@
 
 A modern React web application for managing your favorite brick numbers with optional titles and tags. Built with TypeScript, Vite, and pnpm, featuring a fun and attractive design.
 
+![Brick Manager Application](docs/images/app-screenshot.png)
+
 ## ✨ Features
 
 - **📝 Manage Bricks**: Add, edit, and delete brick entries with numbers and optional titles
@@ -80,7 +82,11 @@ src/
 
 ## 📖 Usage Guide
 
+![Application Interface with Bricks](docs/images/app-with-brick.png)
+
 ### Adding a Brick
+
+![Add Brick Form](docs/images/add-brick-form.png)
 
 1. Enter a brick number (required)
 2. Optionally add a title
