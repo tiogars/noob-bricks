@@ -1,46 +1,71 @@
-import type { Brick } from '../types';
+import type { Brick, ExternalLink, AppState } from '../types';
 
 export const exportService = {
   /**
    * Export bricks to JSON format
    */
-  toJSON(bricks: Brick[]): string {
-    return JSON.stringify(bricks, null, 2);
+  toJSON(bricks: Brick[], externalLinks?: ExternalLink[]): string {
+    const data: AppState = {
+      bricks,
+      tags: [], // Tags are derived from bricks
+      externalLinks,
+    };
+    return JSON.stringify(data, null, 2);
   },
 
   /**
    * Export bricks to CSV format
    */
-  toCSV(bricks: Brick[]): string {
-    if (bricks.length === 0) {
-      return 'Number,Title,Tags,Created At,Updated At\n';
+  toCSV(bricks: Brick[], externalLinks?: ExternalLink[]): string {
+    const escapeCsv = (value: string) => {
+      if (value.includes(',') || value.includes('"') || value.includes('\n')) {
+        return `"${value.replace(/"/g, '""')}"`;
+      }
+      return value;
+    };
+
+    let output = '';
+
+    // Export bricks section
+    output += '[BRICKS]\n';
+    output += 'Number,Title,Tags,Image URL,Created At,Updated At\n';
+    
+    if (bricks.length > 0) {
+      const brickRows = bricks.map((brick) => {
+        return [
+          escapeCsv(brick.number),
+          escapeCsv(brick.title || ''),
+          escapeCsv(brick.tags.join('; ')),
+          escapeCsv(brick.imageUrl || ''),
+          escapeCsv(brick.createdAt),
+          escapeCsv(brick.updatedAt),
+        ].join(',');
+      });
+      output += brickRows.join('\n');
     }
 
-    const headers = 'Number,Title,Tags,Created At,Updated At\n';
-    const rows = bricks.map((brick) => {
-      const escapeCsv = (value: string) => {
-        if (value.includes(',') || value.includes('"') || value.includes('\n')) {
-          return `"${value.replace(/"/g, '""')}"`;
-        }
-        return value;
-      };
+    // Export external links section
+    if (externalLinks && externalLinks.length > 0) {
+      output += '\n\n[EXTERNAL_LINKS]\n';
+      output += 'ID,Name,URL,Enabled\n';
+      const linkRows = externalLinks.map((link) => {
+        return [
+          escapeCsv(link.id),
+          escapeCsv(link.name),
+          escapeCsv(link.url),
+          escapeCsv(link.enabled.toString()),
+        ].join(',');
+      });
+      output += linkRows.join('\n');
+    }
 
-      return [
-        escapeCsv(brick.number),
-        escapeCsv(brick.title || ''),
-        escapeCsv(brick.tags.join('; ')),
-        escapeCsv(brick.createdAt),
-        escapeCsv(brick.updatedAt),
-      ].join(',');
-    });
-
-    return headers + rows.join('\n');
+    return output;
   },
 
   /**
    * Export bricks to XML format
    */
-  toXML(bricks: Brick[]): string {
+  toXML(bricks: Brick[], externalLinks?: ExternalLink[]): string {
     const escapeXml = (value: string) => {
       return value
         .replace(/&/g, '&amp;')
@@ -50,26 +75,46 @@ export const exportService = {
         .replace(/'/g, '&apos;');
     };
 
-    const xmlParts = ['<?xml version="1.0" encoding="UTF-8"?>', '<bricks>'];
+    const xmlParts = ['<?xml version="1.0" encoding="UTF-8"?>', '<appData>'];
 
+    // Export bricks
+    xmlParts.push('  <bricks>');
     bricks.forEach((brick) => {
-      xmlParts.push('  <brick>');
-      xmlParts.push(`    <id>${escapeXml(brick.id)}</id>`);
-      xmlParts.push(`    <number>${escapeXml(brick.number)}</number>`);
+      xmlParts.push('    <brick>');
+      xmlParts.push(`      <id>${escapeXml(brick.id)}</id>`);
+      xmlParts.push(`      <number>${escapeXml(brick.number)}</number>`);
       if (brick.title) {
-        xmlParts.push(`    <title>${escapeXml(brick.title)}</title>`);
+        xmlParts.push(`      <title>${escapeXml(brick.title)}</title>`);
       }
-      xmlParts.push('    <tags>');
+      xmlParts.push('      <tags>');
       brick.tags.forEach((tag) => {
-        xmlParts.push(`      <tag>${escapeXml(tag)}</tag>`);
+        xmlParts.push(`        <tag>${escapeXml(tag)}</tag>`);
       });
-      xmlParts.push('    </tags>');
-      xmlParts.push(`    <createdAt>${escapeXml(brick.createdAt)}</createdAt>`);
-      xmlParts.push(`    <updatedAt>${escapeXml(brick.updatedAt)}</updatedAt>`);
-      xmlParts.push('  </brick>');
+      xmlParts.push('      </tags>');
+      if (brick.imageUrl) {
+        xmlParts.push(`      <imageUrl>${escapeXml(brick.imageUrl)}</imageUrl>`);
+      }
+      xmlParts.push(`      <createdAt>${escapeXml(brick.createdAt)}</createdAt>`);
+      xmlParts.push(`      <updatedAt>${escapeXml(brick.updatedAt)}</updatedAt>`);
+      xmlParts.push('    </brick>');
     });
+    xmlParts.push('  </bricks>');
 
-    xmlParts.push('</bricks>');
+    // Export external links
+    if (externalLinks && externalLinks.length > 0) {
+      xmlParts.push('  <externalLinks>');
+      externalLinks.forEach((link) => {
+        xmlParts.push('    <link>');
+        xmlParts.push(`      <id>${escapeXml(link.id)}</id>`);
+        xmlParts.push(`      <name>${escapeXml(link.name)}</name>`);
+        xmlParts.push(`      <url>${escapeXml(link.url)}</url>`);
+        xmlParts.push(`      <enabled>${link.enabled}</enabled>`);
+        xmlParts.push('    </link>');
+      });
+      xmlParts.push('  </externalLinks>');
+    }
+
+    xmlParts.push('</appData>');
     return xmlParts.join('\n');
   },
 

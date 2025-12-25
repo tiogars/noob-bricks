@@ -19,11 +19,12 @@ import { DisclaimerModal } from '../components/DisclaimerModal';
 import { Footer } from '../components/Footer';
 import { storageService } from '../storage/storageService';
 import type { Brick } from '../types';
+import type { ImportResult } from '../utils/importService';
 
 export function Home() {
   const navigate = useNavigate();
   const { bricks, tags, addBrick, updateBrick, deleteBrick, importBricks, clearAllBricks } = useBricks();
-  const { externalLinks, addExternalLink, updateExternalLink, deleteExternalLink, toggleExternalLink } = useExternalLinks();
+  const { externalLinks, addExternalLink, updateExternalLink, deleteExternalLink, toggleExternalLink, importExternalLinks } = useExternalLinks();
   const [editingBrick, setEditingBrick] = useState<Brick | null>(null);
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const [brickFormModalOpen, setBrickFormModalOpen] = useState(false);
@@ -51,6 +52,13 @@ export function Home() {
       setEditingBrick(null);
     } else {
       addBrick(formData);
+    }
+  };
+
+  const handleImport = (result: ImportResult) => {
+    importBricks(result.bricks);
+    if (result.externalLinks) {
+      importExternalLinks(result.externalLinks);
     }
   };
 
@@ -162,7 +170,8 @@ export function Home() {
         open={importExportModalOpen}
         onClose={() => setImportExportModalOpen(false)}
         bricks={bricks}
-        onImport={importBricks}
+        externalLinks={externalLinks}
+        onImport={handleImport}
         onClearAll={clearAllBricks}
       />
 

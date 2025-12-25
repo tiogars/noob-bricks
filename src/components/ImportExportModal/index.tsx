@@ -11,7 +11,7 @@ interface ImportExportModalProps extends ImportExportProps {
   onClose: () => void;
 }
 
-export function ImportExportModal({ open, onClose, bricks, onImport, onClearAll }: ImportExportModalProps) {
+export function ImportExportModal({ open, onClose, bricks, externalLinks, onImport, onClearAll }: ImportExportModalProps) {
   return (
     <Dialog 
       open={open} 
@@ -39,6 +39,7 @@ export function ImportExportModal({ open, onClose, bricks, onImport, onClearAll 
       <DialogContent sx={{ pt: 2 }}>
         <ImportExportContent
           bricks={bricks}
+          externalLinks={externalLinks}
           onImport={onImport}
           onClearAll={onClearAll}
         />

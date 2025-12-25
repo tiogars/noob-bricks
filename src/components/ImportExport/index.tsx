@@ -13,17 +13,17 @@ import Alert from '@mui/material/Alert';
 import DownloadIcon from '@mui/icons-material/Download';
 import UploadIcon from '@mui/icons-material/Upload';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
-import type { Brick, ExportFormat } from '../../types';
+import type { ExportFormat } from '../../types';
 import { exportService } from '../../utils/exportService';
-import { importService } from '../../utils/importService';
+import { importService, type ImportResult } from '../../utils/importService';
 import type { ImportExportProps } from './ImportExport.types';
 
-export function ImportExport({ bricks, onImport, onClearAll }: ImportExportProps) {
+export function ImportExport({ bricks, externalLinks, onImport, onClearAll }: ImportExportProps) {
   const [isImporting, setIsImporting] = useState(false);
   const [importError, setImportError] = useState<string | null>(null);
   const [clearDialogOpen, setClearDialogOpen] = useState(false);
   const [importDialogOpen, setImportDialogOpen] = useState(false);
-  const [pendingImport, setPendingImport] = useState<{ bricks: Brick[], count: number } | null>(null);
+  const [pendingImport, setPendingImport] = useState<{ result: ImportResult, count: number } | null>(null);
 
   const handleExport = (format: ExportFormat) => {
     if (bricks.length === 0) {
@@ -38,17 +38,17 @@ export function ImportExport({ bricks, onImport, onClearAll }: ImportExportProps
 
       switch (format) {
         case 'json':
-          content = exportService.toJSON(bricks);
+          content = exportService.toJSON(bricks, externalLinks);
           filename = `bricks-${Date.now()}.json`;
           mimeType = 'application/json';
           break;
         case 'csv':
-          content = exportService.toCSV(bricks);
+          content = exportService.toCSV(bricks, externalLinks);
           filename = `bricks-${Date.now()}.csv`;
           mimeType = 'text/csv';
           break;
         case 'xml':
-          content = exportService.toXML(bricks);
+          content = exportService.toXML(bricks, externalLinks);
           filename = `bricks-${Date.now()}.xml`;
           mimeType = 'application/xml';
           break;
@@ -72,27 +72,27 @@ export function ImportExport({ bricks, onImport, onClearAll }: ImportExportProps
       const content = await importService.readFile(file);
       const extension = file.name.split('.').pop()?.toLowerCase();
 
-      let importedBricks: Brick[];
+      let importResult: ImportResult;
 
       switch (extension) {
         case 'json':
-          importedBricks = importService.fromJSON(content);
+          importResult = importService.fromJSON(content);
           break;
         case 'csv':
-          importedBricks = importService.fromCSV(content);
+          importResult = importService.fromCSV(content);
           break;
         case 'xml':
-          importedBricks = importService.fromXML(content);
+          importResult = importService.fromXML(content);
           break;
         default:
           throw new Error('Unsupported file format. Please use JSON, CSV, or XML.');
       }
 
-      if (importedBricks.length === 0) {
+      if (importResult.bricks.length === 0) {
         throw new Error('No bricks found in the imported file.');
       }
 
-      setPendingImport({ bricks: importedBricks, count: importedBricks.length });
+      setPendingImport({ result: importResult, count: importResult.bricks.length });
       setImportDialogOpen(true);
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : 'Unknown error';
@@ -105,7 +105,7 @@ export function ImportExport({ bricks, onImport, onClearAll }: ImportExportProps
 
   const handleImportConfirm = () => {
     if (pendingImport) {
-      onImport(pendingImport.bricks);
+      onImport(pendingImport.result);
       setImportDialogOpen(false);
       setPendingImport(null);
     }
@@ -249,7 +249,10 @@ export function ImportExport({ bricks, onImport, onClearAll }: ImportExportProps
         <DialogTitle>Import Data</DialogTitle>
         <DialogContent>
           <DialogContentText>
-            Import {pendingImport?.count} brick(s)? This will replace your current data.
+            Import {pendingImport?.count} brick(s)
+            {pendingImport?.result.externalLinks && pendingImport.result.externalLinks.length > 0 
+              ? ` and ${pendingImport.result.externalLinks.length} external link(s)` 
+              : ''}? This will replace your current data.
           </DialogContentText>
         </DialogContent>
         <DialogActions>

@@ -36,11 +36,16 @@ export function useExternalLinks() {
     ));
   };
 
+  const importExternalLinks = (links: ExternalLink[]) => {
+    setExternalLinks(links);
+  };
+
   return {
     externalLinks,
     addExternalLink,
     updateExternalLink,
     deleteExternalLink,
     toggleExternalLink,
+    importExternalLinks,
   };
 }

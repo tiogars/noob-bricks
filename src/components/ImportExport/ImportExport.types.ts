@@ -1,7 +1,9 @@
-import type { Brick } from '../../types';
+import type { Brick, ExternalLink } from '../../types';
+import type { ImportResult } from '../../utils/importService';
 
 export interface ImportExportProps {
   bricks: Brick[];
-  onImport: (bricks: Brick[]) => void;
+  externalLinks: ExternalLink[];
+  onImport: (result: ImportResult) => void;
   onClearAll: () => void;
 }
