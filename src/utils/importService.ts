@@ -6,6 +6,13 @@ export interface ImportResult {
   externalLinks?: ExternalLink[];
 }
 
+/**
+ * Generate a unique ID for an external link
+ */
+function generateExternalLinkId(): string {
+  return `link-${Date.now()}-${Math.random().toString(36).substring(2, 11)}`;
+}
+
 export const importService = {
   /**
    * Import bricks from JSON format
@@ -64,7 +71,7 @@ export const importService = {
         const lines = section.trim().split('\n');
         if (lines.length === 0) continue;
 
-        const sectionName = lines[0].replace(/[\[\]]/g, '').toUpperCase();
+        const sectionName = lines[0].replace(/[\\[\\]]/g, '').toUpperCase();
         
         if (sectionName === 'BRICKS' || !sectionName.startsWith('[')) {
           // Process bricks section
@@ -114,7 +121,7 @@ export const importService = {
             const [id, name, url, enabled] = values;
             
             externalLinks.push({
-              id: id || `link-${Date.now()}-${Math.random().toString(36).substring(2, 11)}`,
+              id: id || generateExternalLinkId(),
               name: name || '',
               url: url || '',
               enabled: enabled.toLowerCase() === 'true',
@@ -225,7 +232,7 @@ export const importService = {
         const externalLinks: ExternalLink[] = [];
 
         linkElements.forEach((linkEl) => {
-          const id = linkEl.querySelector('id')?.textContent || `link-${Date.now()}-${Math.random().toString(36).substring(2, 11)}`;
+          const id = linkEl.querySelector('id')?.textContent || generateExternalLinkId();
           const name = linkEl.querySelector('name')?.textContent || '';
           const url = linkEl.querySelector('url')?.textContent || '';
           const enabledText = linkEl.querySelector('enabled')?.textContent || 'true';
@@ -295,7 +302,7 @@ export const importService = {
       }
 
       return {
-        id: typeof linkObj.id === 'string' ? linkObj.id : `link-${Date.now()}-${Math.random().toString(36).substring(2, 11)}`,
+        id: typeof linkObj.id === 'string' ? linkObj.id : generateExternalLinkId(),
         name: String(linkObj.name),
         url: String(linkObj.url),
         enabled: typeof linkObj.enabled === 'boolean' ? linkObj.enabled : true,
