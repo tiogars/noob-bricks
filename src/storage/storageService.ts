@@ -1,4 +1,5 @@
 import type { Brick, ExternalLink } from '../types';
+import { imageStorageService } from './imageStorageService';
 
 const STORAGE_KEY = 'noob-bricks-data';
 const FIRST_LAUNCH_KEY = 'noob-bricks-first-launch';
@@ -53,14 +54,33 @@ export const storageService = {
   },
 
   /**
-   * Clear all data from localStorage
+   * Clear all data from localStorage and IndexedDB
    */
-  clear(): void {
+  async clear(): Promise<void> {
     try {
       localStorage.removeItem(STORAGE_KEY);
+      // Also clear images from IndexedDB
+      if (imageStorageService.isSupported()) {
+        await imageStorageService.clearAll();
+      }
     } catch (error) {
-      console.error('Failed to clear localStorage:', error);
+      console.error('Failed to clear storage:', error);
       throw new Error('Failed to clear data');
+    }
+  },
+
+  /**
+   * Delete a brick and its associated image
+   */
+  async deleteBrickWithImage(_brickId: string, imageUrl?: string): Promise<void> {
+    // Delete image from IndexedDB if it's an image ID (not a base64 data URL)
+    if (imageUrl && !imageUrl.startsWith('data:image/') && imageStorageService.isSupported()) {
+      try {
+        await imageStorageService.deleteImage(imageUrl);
+      } catch (error) {
+        console.error('Failed to delete image:', error);
+        // Continue even if image deletion fails
+      }
     }
   },
 

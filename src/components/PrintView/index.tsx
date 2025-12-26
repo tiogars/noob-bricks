@@ -10,29 +10,17 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
-import Skeleton from '@mui/material/Skeleton';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import PrintIcon from '@mui/icons-material/Print';
-import { useState } from 'react';
 import { brickService } from '../../models/brickService';
+import { BrickImage } from '../BrickImage';
 import type { PrintViewProps } from './PrintView.types';
 
 export function PrintView({ bricks, selectedTags, onClose }: PrintViewProps) {
-  const [imageLoadError, setImageLoadError] = useState<Record<string, boolean>>({});
-  const [imageLoading, setImageLoading] = useState<Record<string, boolean>>({});
   const sortedBricks = brickService.sortByNumber(bricks);
 
   const handlePrint = () => {
     window.print();
-  };
-
-  const handleImageLoad = (brickId: string) => {
-    setImageLoading(prev => ({ ...prev, [brickId]: false }));
-  };
-
-  const handleImageError = (brickId: string) => {
-    setImageLoadError(prev => ({ ...prev, [brickId]: true }));
-    setImageLoading(prev => ({ ...prev, [brickId]: false }));
   };
 
   return (
@@ -113,26 +101,18 @@ export function PrintView({ bricks, selectedTags, onClose }: PrintViewProps) {
                     <TableRow key={brick.id} hover>
                       <TableCell sx={{ width: 100 }}>
                         {brick.imageUrl ? (
-                          <Box sx={{ position: 'relative', width: 80, height: 80 }}>
-                            {(imageLoading[brick.id] !== false) && !imageLoadError[brick.id] && (
-                              <Skeleton variant="rectangular" width={80} height={80} />
-                            )}
-                            {!imageLoadError[brick.id] && (
-                              <img
-                                src={brick.imageUrl}
-                                alt={`Brick ${brick.number}`}
-                                onLoad={() => handleImageLoad(brick.id)}
-                                onError={() => handleImageError(brick.id)}
-                                style={{
-                                  width: '80px',
-                                  height: '80px',
-                                  objectFit: 'cover',
-                                  borderRadius: '4px',
-                                  display: imageLoading[brick.id] === false ? 'block' : 'none',
-                                }}
-                              />
-                            )}
-                          </Box>
+                          <BrickImage
+                            imageId={brick.imageUrl}
+                            alt={`Brick ${brick.number}`}
+                            width={80}
+                            height={80}
+                            style={{
+                              width: '80px',
+                              height: '80px',
+                              objectFit: 'cover',
+                              borderRadius: '4px',
+                            }}
+                          />
                         ) : (
                           <Box
                             sx={{

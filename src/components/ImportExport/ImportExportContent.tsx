@@ -9,26 +9,32 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContentText from '@mui/material/DialogContentText';
 import Alert from '@mui/material/Alert';
+import CircularProgress from '@mui/material/CircularProgress';
 import DownloadIcon from '@mui/icons-material/Download';
 import UploadIcon from '@mui/icons-material/Upload';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import type { ExportFormat } from '../../types';
 import { exportService } from '../../utils/exportService';
+import { enhancedExportService } from '../../utils/enhancedExportService';
 import { importService, type ImportResult } from '../../utils/importService';
 import type { ImportExportProps } from './ImportExport.types';
 
 export function ImportExportContent({ bricks, externalLinks, onImport, onClearAll }: ImportExportProps) {
   const [isImporting, setIsImporting] = useState(false);
+  const [isExporting, setIsExporting] = useState(false);
   const [importError, setImportError] = useState<string | null>(null);
   const [clearDialogOpen, setClearDialogOpen] = useState(false);
   const [importDialogOpen, setImportDialogOpen] = useState(false);
   const [pendingImport, setPendingImport] = useState<{ result: ImportResult, count: number } | null>(null);
 
-  const handleExport = (format: ExportFormat) => {
+  const handleExport = async (format: ExportFormat) => {
     if (bricks.length === 0) {
       setImportError('No bricks to export!');
       return;
     }
+
+    setIsExporting(true);
+    setImportError(null);
 
     try {
       let content: string;
@@ -37,17 +43,17 @@ export function ImportExportContent({ bricks, externalLinks, onImport, onClearAl
 
       switch (format) {
         case 'json':
-          content = exportService.toJSON(bricks, externalLinks);
+          content = await enhancedExportService.toJSONWithImages(bricks, externalLinks);
           filename = `bricks-${Date.now()}.json`;
           mimeType = 'application/json';
           break;
         case 'csv':
-          content = exportService.toCSV(bricks, externalLinks);
+          content = await enhancedExportService.toCSVWithImages(bricks, externalLinks);
           filename = `bricks-${Date.now()}.csv`;
           mimeType = 'text/csv';
           break;
         case 'xml':
-          content = exportService.toXML(bricks, externalLinks);
+          content = await enhancedExportService.toXMLWithImages(bricks, externalLinks);
           filename = `bricks-${Date.now()}.xml`;
           mimeType = 'application/xml';
           break;
@@ -57,6 +63,8 @@ export function ImportExportContent({ bricks, externalLinks, onImport, onClearAl
       setImportError(null);
     } catch (error) {
       setImportError('Failed to export data: ' + (error instanceof Error ? error.message : 'Unknown error'));
+    } finally {
+      setIsExporting(false);
     }
   };
 
@@ -147,27 +155,27 @@ export function ImportExportContent({ bricks, externalLinks, onImport, onClearAl
         <Stack direction="row" spacing={1} flexWrap="wrap" useFlexGap>
           <Button
             variant="outlined"
-            startIcon={<DownloadIcon />}
+            startIcon={isExporting ? <CircularProgress size={16} /> : <DownloadIcon />}
             onClick={() => handleExport('json')}
-            disabled={bricks.length === 0}
+            disabled={bricks.length === 0 || isExporting}
             size="small"
           >
             JSON
           </Button>
           <Button
             variant="outlined"
-            startIcon={<DownloadIcon />}
+            startIcon={isExporting ? <CircularProgress size={16} /> : <DownloadIcon />}
             onClick={() => handleExport('csv')}
-            disabled={bricks.length === 0}
+            disabled={bricks.length === 0 || isExporting}
             size="small"
           >
             CSV
           </Button>
           <Button
             variant="outlined"
-            startIcon={<DownloadIcon />}
+            startIcon={isExporting ? <CircularProgress size={16} /> : <DownloadIcon />}
             onClick={() => handleExport('xml')}
-            disabled={bricks.length === 0}
+            disabled={bricks.length === 0 || isExporting}
             size="small"
           >
             XML
