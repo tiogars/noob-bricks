@@ -9,6 +9,7 @@ import ImportExportIcon from '@mui/icons-material/ImportExport';
 import SettingsIcon from '@mui/icons-material/Settings';
 import { useBricks } from '../hooks/useBricks';
 import { useExternalLinks } from '../hooks/useExternalLinks';
+import { useAdModal } from '../hooks/useAdModal';
 import { Header } from '../components/Header';
 import { BrickFormModal } from '../components/BrickFormModal';
 import { BrickList } from '../components/BrickList';
@@ -16,6 +17,7 @@ import { TagFilter } from '../components/TagFilter';
 import { ImportExportModal } from '../components/ImportExportModal';
 import { ExternalLinksSettings } from '../components/ExternalLinksSettings';
 import { DisclaimerModal } from '../components/DisclaimerModal';
+import { AdModal } from '../components/AdModal';
 import { Footer } from '../components/Footer';
 import { storageService } from '../storage/storageService';
 import type { Brick } from '../types';
@@ -25,6 +27,7 @@ export function Home() {
   const navigate = useNavigate();
   const { bricks, tags, addBrick, updateBrick, deleteBrick, importBricks, clearAllBricks } = useBricks();
   const { externalLinks, addExternalLink, updateExternalLink, deleteExternalLink, toggleExternalLink, importExternalLinks } = useExternalLinks();
+  const { isAdModalOpen, adModalTimestamp, closeAdModal } = useAdModal();
   const [editingBrick, setEditingBrick] = useState<Brick | null>(null);
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const [brickFormModalOpen, setBrickFormModalOpen] = useState(false);
@@ -188,6 +191,12 @@ export function Home() {
       <DisclaimerModal
         open={disclaimerModalOpen}
         onClose={handleDisclaimerClose}
+      />
+
+      <AdModal
+        open={isAdModalOpen}
+        timestamp={adModalTimestamp}
+        onClose={closeAdModal}
       />
     </Box>
   );
