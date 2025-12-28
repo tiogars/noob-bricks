@@ -4,12 +4,11 @@ import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import Chip from '@mui/material/Chip';
 import Stack from '@mui/material/Stack';
-import PrintIcon from '@mui/icons-material/Print';
 import ClearIcon from '@mui/icons-material/Clear';
 import SelectAllIcon from '@mui/icons-material/SelectAll';
 import type { TagFilterProps } from './TagFilter.types';
 
-export function TagFilter({ tags, selectedTags, onTagsChange, onPrint }: TagFilterProps) {
+export function TagFilter({ tags, selectedTags, onTagsChange }: TagFilterProps) {
   const handleToggleTag = (tag: string) => {
     if (selectedTags.includes(tag)) {
       onTagsChange(selectedTags.filter((t) => t !== tag));
@@ -57,17 +56,6 @@ export function TagFilter({ tags, selectedTags, onTagsChange, onPrint }: TagFilt
               Select All
             </Button>
           )}
-          <Button
-            size="small"
-            variant="contained"
-            startIcon={<PrintIcon />}
-            onClick={onPrint}
-            sx={{
-              background: (theme) => `linear-gradient(135deg, ${theme.palette.primary.light} 0%, ${theme.palette.primary.main} 100%)`,
-            }}
-          >
-            Print
-          </Button>
         </Stack>
       </Box>
 
