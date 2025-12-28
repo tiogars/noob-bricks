@@ -7,6 +7,7 @@ import Tooltip from '@mui/material/Tooltip';
 import AddIcon from '@mui/icons-material/Add';
 import ImportExportIcon from '@mui/icons-material/ImportExport';
 import SettingsIcon from '@mui/icons-material/Settings';
+import PrintIcon from '@mui/icons-material/Print';
 import { useBricks } from '../hooks/useBricks';
 import { useExternalLinks } from '../hooks/useExternalLinks';
 import { useAdModal } from '../hooks/useAdModal';
@@ -88,7 +89,6 @@ export function Home() {
             tags={tags}
             selectedTags={selectedTags}
             onTagsChange={setSelectedTags}
-            onPrint={handlePrint}
           />
 
           <BrickList
@@ -122,6 +122,24 @@ export function Home() {
         </Fab>
       </Tooltip>
 
+      <Tooltip title="Print" placement="left">
+        <Fab
+          aria-label="print"
+          onClick={handlePrint}
+          sx={{
+            position: 'fixed',
+            bottom: 96,
+            right: 24,
+            background: 'linear-gradient(135deg, #fa709a 0%, #fee140 100%)',
+            '&:hover': {
+              background: 'linear-gradient(135deg, #fee140 0%, #fa709a 100%)',
+            },
+          }}
+        >
+          <PrintIcon />
+        </Fab>
+      </Tooltip>
+
       <Tooltip title="Import / Export" placement="left">
         <Fab
           color="secondary"
@@ -129,7 +147,7 @@ export function Home() {
           onClick={() => setImportExportModalOpen(true)}
           sx={{
             position: 'fixed',
-            bottom: 96,
+            bottom: 168,
             right: 24,
             background: 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)',
             '&:hover': {
@@ -147,7 +165,7 @@ export function Home() {
           onClick={() => setExternalLinksSettingsOpen(true)}
           sx={{
             position: 'fixed',
-            bottom: 168,
+            bottom: 240,
             right: 24,
             background: 'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)',
             '&:hover': {
