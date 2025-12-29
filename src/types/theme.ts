@@ -1,6 +1,7 @@
 export interface Theme {
   name: string;
   displayName: string;
+  mode: 'light' | 'dark';
   colors: {
     // Primary gradients
     primaryGradientStart: string;

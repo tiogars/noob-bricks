@@ -4,7 +4,7 @@ import type { Theme } from '../types/theme';
 export const createMuiTheme = (theme: Theme) => {
   return createTheme({
     palette: {
-      mode: 'light',
+      mode: theme.mode,
       primary: {
         main: theme.colors.accentColor,
         light: theme.colors.primaryGradientStart,
@@ -20,7 +20,7 @@ export const createMuiTheme = (theme: Theme) => {
         light: theme.colors.dangerGradientStart,
       },
       background: {
-        default: '#ffffff',
+        default: theme.mode === 'dark' ? '#1a202c' : '#ffffff',
         paper: theme.colors.cardGradientStart,
       },
     },

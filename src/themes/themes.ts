@@ -3,6 +3,7 @@ import type { Theme } from '../types/theme';
 export const defaultTheme: Theme = {
   name: 'default',
   displayName: 'Default',
+  mode: 'light',
   colors: {
     // Primary purple gradient
     primaryGradientStart: '#667eea',
@@ -38,6 +39,7 @@ export const defaultTheme: Theme = {
 export const christmasTheme: Theme = {
   name: 'christmas',
   displayName: 'Christmas',
+  mode: 'light',
   colors: {
     // Christmas red and green gradient
     primaryGradientStart: '#c94b4b',
@@ -70,9 +72,46 @@ export const christmasTheme: Theme = {
   },
 };
 
+export const darkTheme: Theme = {
+  name: 'dark',
+  displayName: 'Dark',
+  mode: 'dark',
+  colors: {
+    // Dark mode primary gradient
+    primaryGradientStart: '#667eea',
+    primaryGradientEnd: '#764ba2',
+    
+    // Accent colors
+    accentColor: '#667eea',
+    dangerGradientStart: '#f093fb',
+    dangerGradientEnd: '#f5576c',
+    
+    // Secondary colors (dark mode appropriate)
+    secondaryGradientStart: '#2d3748',
+    secondaryGradientEnd: '#1a202c',
+    
+    // Card backgrounds (dark mode)
+    cardGradientStart: '#2d3748',
+    cardGradientEnd: '#1a202c',
+    
+    // Tag colors
+    tagBackground: 'rgba(102, 126, 234, 0.3)',
+    tagText: '#a5b4fc',
+    
+    // Button colors
+    printButtonStart: '#667eea',
+    printButtonEnd: '#764ba2',
+    exportButtonStart: '#4facfe',
+    exportButtonEnd: '#00f2fe',
+    importButtonStart: '#43e97b',
+    importButtonEnd: '#38f9d7',
+  },
+};
+
 export const themes: { [key: string]: Theme } = {
   default: defaultTheme,
   christmas: christmasTheme,
+  dark: darkTheme,
 };
 
 export const DEFAULT_THEME_NAME = 'christmas';

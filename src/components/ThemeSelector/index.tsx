@@ -5,6 +5,12 @@ import Typography from '@mui/material/Typography';
 import { useTheme } from '../../contexts/ThemeContext';
 import { themes } from '../../themes/themes';
 
+const themeEmojis: Record<string, string> = {
+  default: '🎨',
+  christmas: '🎄',
+  dark: '🌙',
+};
+
 export const ThemeSelector = () => {
   const { theme, setTheme } = useTheme();
 
@@ -44,7 +50,7 @@ export const ThemeSelector = () => {
       >
         {Object.values(themes).map((t) => (
           <ToggleButton key={t.name} value={t.name} aria-label={`${t.displayName} theme`}>
-            {t.name === 'christmas' ? '🎄' : '🎨'} {t.displayName}
+            {themeEmojis[t.name] || '🎨'} {t.displayName}
           </ToggleButton>
         ))}
       </ToggleButtonGroup>
