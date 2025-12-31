@@ -12,4 +12,5 @@ export interface BrickFormProps {
   editingBrick: Brick | null;
   onCancel: () => void;
   existingTags: string[];
+  existingBricks: Brick[];
 }

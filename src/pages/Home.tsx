@@ -184,6 +184,7 @@ export function Home() {
         editingBrick={editingBrick}
         onCancel={handleCancelEdit}
         existingTags={tags}
+        existingBricks={bricks}
       />
 
       <ImportExportModal
