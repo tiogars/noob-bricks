@@ -15,7 +15,7 @@ import PhotoCamera from '@mui/icons-material/PhotoCamera';
 import DeleteIcon from '@mui/icons-material/Delete';
 import type { BrickFormProps, BrickFormInputs } from './BrickForm.types';
 
-export function BrickForm({ onSubmit, editingBrick, onCancel, existingTags }: BrickFormProps) {
+export function BrickForm({ onSubmit, editingBrick, onCancel, existingTags, existingBricks }: BrickFormProps) {
   const [tagInput, setTagInput] = useState('');
   const [imagePreview, setImagePreview] = useState<string | undefined>(editingBrick?.imageUrl);
   const [imageError, setImageError] = useState<string>('');
@@ -138,6 +138,13 @@ export function BrickForm({ onSubmit, editingBrick, onCancel, existingTags }: Br
               required: 'Brick number is required',
               validate: {
                 notEmpty: (value) => value.trim().length > 0 || 'Brick number cannot be empty',
+                unique: (value) => {
+                  const trimmedValue = value.trim();
+                  const duplicate = existingBricks.find(
+                    (brick) => brick.number === trimmedValue && brick.id !== editingBrick?.id
+                  );
+                  return !duplicate || 'This brick number already exists';
+                },
               },
             }}
             render={({ field }) => (
